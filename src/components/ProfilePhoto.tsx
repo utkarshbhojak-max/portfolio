@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Camera, Check } from 'lucide-react';
+import { Camera } from 'lucide-react';
+import defaultProfilePhoto from '../assets/profile.png';
 
 interface ProfilePhotoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
@@ -12,7 +13,7 @@ export const ProfilePhoto: React.FC<ProfilePhotoProps> = ({
   className = '',
   showUploadHint = false,
 }) => {
-  const [photoUrl, setPhotoUrl] = useState<string>('/profile.png');
+  const [photoUrl, setPhotoUrl] = useState<string>(defaultProfilePhoto);
   const [hasError, setHasError] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -61,7 +62,14 @@ export const ProfilePhoto: React.FC<ProfilePhotoProps> = ({
           <img
             src={photoUrl}
             alt="Utkarsh Bhojak - Data Science & CS Engineering Student"
-            onError={() => setHasError(true)}
+            onError={() => {
+              // Fallback to public path if imported asset fails, else show SVG
+              if (photoUrl !== defaultProfilePhoto) {
+                setPhotoUrl(defaultProfilePhoto);
+              } else {
+                setHasError(true);
+              }
+            }}
             className="w-full h-full object-cover"
           />
         ) : (
